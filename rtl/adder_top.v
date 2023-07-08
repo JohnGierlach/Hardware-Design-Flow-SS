@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
-module adder_top(
-    #(parameter WIDTH = 32),
+module adder_top #(parameter WIDTH = 16)
+    (
     input[WIDTH:0] data_A,
     input[WIDTH:0] data_B,
     output[WIDTH:0] result
@@ -10,7 +10,8 @@ module adder_top(
     wire[WIDTH:0] adder_carrys;
     wire[WIDTH-1:0] adder_sums;
     assign adder_carrys[0] =  1'b0;
-
+    
+    // Generates the WIDTH size full adders iteratively 
     genvar i;
     generate
 
@@ -25,8 +26,7 @@ module adder_top(
         end
     endgenerate 
     
-    
-    
-    assign result = {adder_carrys, adder_sums};
+    // Concatinates the carry bit with the collective sums
+    assign result = {adder_carrys[WIDTH], adder_sums};
 
 endmodule
