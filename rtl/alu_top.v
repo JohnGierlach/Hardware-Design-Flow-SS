@@ -36,6 +36,4 @@ module alu_top#(parameter WIDTH = 32)
 
     assign RD = temp_RD;
     
-
-    
 endmodule

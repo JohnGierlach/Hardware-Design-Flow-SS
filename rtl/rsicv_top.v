@@ -32,7 +32,17 @@ module rsicv_top #(parameter WIDTH = 32)
     reg[6:0] Funct7;
     reg[2:0] Funct3;
     reg[6:0] opcode;
+    reg[WIDTH-1:0] Ram [0:WIDTH-1];
     
+
+    integer i;
+    always@(posedge clk)begin
+        for(i = 0; i < WIDTH; i = i+1)begin
+            if(rst) Ram[i] <= {WIDTH, 1'b0};
+            else    Ram[i] <= addr;
+        end
+    end
+
     always@(posedge clk)begin 
         if(rst) begin
             RD <= 5'b0;
@@ -44,12 +54,12 @@ module rsicv_top #(parameter WIDTH = 32)
         end
             
         else begin
-            opcode <= {addr[6:0]};
-            RD     <= {addr[11:7]};
-            Funct3 <= {addr[14:12]};
-            RS1    <= {addr[19:15]};
-            RS2    <= {addr[24:20]};
-            Funct7 <= {addr[31:25]};
+            opcode <= {Ram[i][6:0]};
+            RD     <= {Ram[i][11:7]};
+            Funct3 <= {Ram[i][14:12]};
+            RS1    <= {Ram[i][19:15]};
+            RS2    <= {Ram[i][24:20]};
+            Funct7 <= {Ram[i][31:25]};
         end
     end
     
