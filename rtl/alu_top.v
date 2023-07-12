@@ -22,12 +22,12 @@ module alu_top#(parameter WIDTH = 32)
             temp_RD <= 0;
         
         case(Funct3)
-            ADD:  temp_RD <= RS2 + RS1;
+            ADD:  temp_RD <= RS2 + RS1; //Add SUB based on Funct7
             SLL:  temp_RD <= RS2 << RS1;
             SLT:  temp_RD[0] <= (RS2 < RS1);
             SLTU: temp_RD[0] <= (RS2 < RS1);
             XOR:  temp_RD <= RS2 ^ RS1; 
-            SRL:  temp_RD <= RS2 >> RS1;
+            SRL:  temp_RD <= RS2 >> RS1; // Add SRA Funct7
             OR:   temp_RD <= RS2 | RS1;
             AND:  temp_RD <= RS2 & RS1;
             default: temp_RD <= temp_RD;

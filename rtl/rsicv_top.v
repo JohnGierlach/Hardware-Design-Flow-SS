@@ -33,13 +33,25 @@ module rsicv_top #(parameter WIDTH = 32)
     reg[2:0] Funct3;
     reg[6:0] opcode;
     reg[WIDTH-1:0] Ram [0:WIDTH-1];
-    
+    reg RdEn;
+    reg[WIDTH-1:0] RdPntr;
 
     integer i;
+    
+    alu_top RTYPE_ALU(.clk(clk), .rst(rst), .RS1(RS1), .RS2(RS2), .Funct3(Funct3), .Funct7(Funct7), .RD(RD));
+    
     always@(posedge clk)begin
-        for(i = 0; i < WIDTH; i = i+1)begin
+        if(rst)begin
+         for(i = 0; i < WIDTH; i = i+1)
             if(rst) Ram[i] <= {WIDTH, 1'b0};
-            else    Ram[i] <= addr;
+        end
+        else begin
+            for(i = 0; i < WIDTH; i = i+1)begin
+                if(addr == 32'h0000)
+                    RdEn <= 1'b1; 
+                else
+                    Ram[i] <= addr;
+            end   
         end
     end
 
@@ -51,16 +63,23 @@ module rsicv_top #(parameter WIDTH = 32)
             Funct7 <= 7'b0;
             Funct3 <= 3'b0;
             opcode <= 7'b0;
+            RdEn <= 1'b0;
+            RdPntr <= {WIDTH, 1'b0};
         end
             
         else begin
-            opcode <= {Ram[i][6:0]};
-            RD     <= {Ram[i][11:7]};
-            Funct3 <= {Ram[i][14:12]};
-            RS1    <= {Ram[i][19:15]};
-            RS2    <= {Ram[i][24:20]};
-            Funct7 <= {Ram[i][31:25]};
+            if(RdEn)begin
+                opcode <= {Ram[RdPntr][6:0]};
+                RD     <= {Ram[RdPntr][11:7]};
+                Funct3 <= {Ram[RdPntr][14:12]};
+                RS1    <= {Ram[RdPntr][19:15]};
+                RS2    <= {Ram[RdPntr][24:20]};
+                Funct7 <= {Ram[RdPntr][31:25]};
+                RdPntr <= RdPntr + 1;
+            end
         end
     end
+    
+    assign rd = RD;
     
 endmodule
