@@ -27,7 +27,7 @@ module riscv_tb();
     reg[WIDTH-1:0] addr;
     wire[4:0] rd;
     
-    rsicv_top #(WIDTH) UUT(.clk(clk), .rst(rst), .addr(addr), .rd(rd));
+    riscv_top #(WIDTH) UUT(.clk(clk), .rst(rst), .addr(addr), .rd(rd));
     
     integer i; 
     
