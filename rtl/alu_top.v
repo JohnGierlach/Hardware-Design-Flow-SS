@@ -4,11 +4,11 @@ module alu_top#(parameter WIDTH = 32)
 (
     input clk,
     input rst,
-    input[WIDTH-1:0] RS1,
-    input[WIDTH-1:0] RS2,
+    input[4:0] RS1,
+    input[4:0] RS2,
     input[2:0] Funct3,
-    input Funct7,
-    output[WIDTH:0] RD
+    input[6:0] Funct7,
+    output[4:0] RD
 
 );
 
