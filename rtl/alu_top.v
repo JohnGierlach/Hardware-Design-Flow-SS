@@ -4,23 +4,26 @@ module alu_top#(parameter WIDTH = 32)
 (
     input clk,
     input rst,
-    input[4:0] RS1,
-    input[4:0] RS2,
+    input[WIDTH-1:0] RS1,
+    input[WIDTH-1:0] RS2,
     input[2:0] Funct3,
     input[6:0] Funct7,
-    output[4:0] RD
+    input[6:0] opcode,
+    input[11:0] Imm_reg,
+    output[WIDTH-1:0] RD
 
 );
 
     parameter ADD = 0, SLL = 1, SLT = 2, SLTU = 3, XOR = 4, SRL = 5, OR = 6, AND = 7, NOP = 8; 
 
-    reg[WIDTH:0] temp_RD;
-
+    reg[WIDTH-1:0] temp_RD;
+    
     always@(posedge clk)begin  
         if(rst)
             temp_RD <= 0;
         
-        else if(RS1 != 32'b0 ||  RS1 != 32'b0)begin
+        // Register Operations
+        else if(opcode == 7'b0110011)begin
             case(Funct3)
                 ADD:  temp_RD <= RS2 + RS1; //Add SUB based on Funct7
                 SLL:  temp_RD <= RS2 << RS1;
@@ -30,6 +33,21 @@ module alu_top#(parameter WIDTH = 32)
                 SRL:  temp_RD <= RS2 >> RS1; // Add SRA Funct7
                 OR:   temp_RD <= RS2 | RS1;
                 AND:  temp_RD <= RS2 & RS1;
+                default: temp_RD <= temp_RD;
+            endcase
+        end
+        
+        // Immediate Operations
+        else if(opcode == 7'b0010011) begin
+            case(Funct3)
+                ADD:  temp_RD <= Imm_reg + RS1; //Add SUB based on Funct7
+                SLL:  temp_RD <= Imm_reg << RS1;
+                SLT:  temp_RD[0] <= (Imm_reg < RS1);
+                SLTU: temp_RD[0] <= (Imm_reg < RS1);
+                XOR:  temp_RD <= Imm_reg ^ RS1; 
+                SRL:  temp_RD <= Imm_reg >> RS1; // Add SRA Funct7
+                OR:   temp_RD <= Imm_reg | RS1;
+                AND:  temp_RD <= Imm_reg & RS1;
                 default: temp_RD <= temp_RD;
             endcase
         end

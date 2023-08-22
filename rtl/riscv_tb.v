@@ -25,23 +25,31 @@ module riscv_tb();
     parameter WIDTH = 32;
     reg clk, rst;
     reg[WIDTH-1:0] addr;
-    wire[4:0] rd;
+    wire[WIDTH-1:0] rd;
     
     riscv_top #(WIDTH) UUT(.clk(clk), .rst(rst), .addr(addr), .rd(rd));
     
-    integer i; 
+    /*
+    addi x1, x1, 10
+    addi x2, x2, 10
+    add x3, x2, x1
+    */
     
     initial
     begin
-        clk = 0;
+        clk = 1;
         rst = 1;
         #20;
         rst = 0;
-        addr = 32'h00730033;
+        addr = 32'h00A08093;
+        #20;
+        addr = 32'h00A10113;
         #20
-        addr = 32'h00000000;
+        addr = 32'h001101B3;
+        #20
+        addr = 32'h0;
         
     end
     
-    always #20 clk = ~clk;
+    always #10 clk = ~clk;
 endmodule
