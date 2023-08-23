@@ -10,7 +10,7 @@ module alu_top#(parameter WIDTH = 32)
     input[6:0] Funct7,
     input[6:0] opcode,
     input[11:0] Imm_reg,
-    output[WIDTH-1:0] RD
+    output [WIDTH-1:0] RD
 
 );
 
