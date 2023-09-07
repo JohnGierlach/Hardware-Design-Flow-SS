@@ -30,5 +30,6 @@ module riscv_top #(parameter WIDTH = 32)
 
     register_select REG_FILE_SELECT(.clk(clk), .rst(rst), .addr(addr), .RD_out(rd));
 
+    // Would have more modules, this is a simple RISC-V ALU design
     
 endmodule

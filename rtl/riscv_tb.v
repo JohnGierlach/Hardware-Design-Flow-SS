@@ -47,6 +47,10 @@ module riscv_tb();
         #20
         addr = 32'h001101B3;
         #20
+        addr = 32'h0030A233;
+        #20
+        addr = 32'h00115293;
+        #20
         addr = 32'h0;
         
     end

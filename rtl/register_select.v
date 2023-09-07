@@ -11,12 +11,13 @@ module register_select #(parameter WIDTH = 32)(
     end
     
     reg[4:0] RD, RS2, RS1;
-    reg[WIDTH-1:0] RS2_data, RS1_data;
+    wire[WIDTH-1:0] RS2_data, RS1_data;
     wire[WIDTH-1:0] RD_data;
     reg[6:0] Funct7;
     reg[2:0] Funct3;
     reg[6:0] opcode;
- 
+    
+    wire[WIDTH-1:0] prev_addr;
     reg RdEn;
     reg[WIDTH-1:0] RdPntr;
     alu_top ALU_ENGINE(.clk(clk), 
@@ -26,7 +27,8 @@ module register_select #(parameter WIDTH = 32)(
                        .Funct3(Funct3), 
                        .Funct7(Funct7), 
                        .RD(RD_data), 
-                       .Imm_reg({Funct7, RS2}), 
+                       .Imm_reg({Funct7, RS2}),
+                       .Shamt(RS2),
                        .opcode(opcode));
     
     always@(posedge clk)begin 
@@ -56,17 +58,14 @@ module register_select #(parameter WIDTH = 32)(
         if(rst)begin
             for(i = 0; i < WIDTH; i = i + 1)
                 Reg_list[i] <= 32'b0;
-            RS1_data <= 32'b0;
-            RS2_data <= 32'b0;
         end
         
-        else begin
-            Reg_list[RS1] <= RS1_data;
-            Reg_list[RS2] <= RS2_data;
-            Reg_list[RD] <= RD_data;
-        end
+        Reg_list[RD] = RD_data;
    end
    
+   assign prev_addr = addr;
+   assign RS1_data = Reg_list[RS1];
+   assign RS2_data = Reg_list[RS2];
    assign RD_out = RD_data;
    
 endmodule

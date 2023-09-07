@@ -10,6 +10,7 @@ module alu_top#(parameter WIDTH = 32)
     input[6:0] Funct7,
     input[6:0] opcode,
     input[11:0] Imm_reg,
+    input[4:0] Shamt,
     output [WIDTH-1:0] RD
 
 );
@@ -18,7 +19,7 @@ module alu_top#(parameter WIDTH = 32)
 
     reg[WIDTH-1:0] temp_RD;
     
-    always@(posedge clk)begin  
+    always@(*)begin  
         if(rst)
             temp_RD <= 0;
         
@@ -27,10 +28,10 @@ module alu_top#(parameter WIDTH = 32)
             case(Funct3)
                 ADD:  temp_RD <= RS2 + RS1; //Add SUB based on Funct7
                 SLL:  temp_RD <= RS2 << RS1;
-                SLT:  temp_RD[0] <= (RS2 < RS1);
-                SLTU: temp_RD[0] <= (RS2 < RS1);
+                SLT:  temp_RD <= (RS1 < RS2) ? 1'b1:1'b0;
+                SLTU: temp_RD <= (RS1 < RS2) ? 1'b1:1'b0;
                 XOR:  temp_RD <= RS2 ^ RS1; 
-                SRL:  temp_RD <= RS2 >> RS1; // Add SRA Funct7
+                SRL:  temp_RD <= Shamt >> RS1; // Add SRA Funct7
                 OR:   temp_RD <= RS2 | RS1;
                 AND:  temp_RD <= RS2 & RS1;
                 default: temp_RD <= temp_RD;
@@ -41,16 +42,19 @@ module alu_top#(parameter WIDTH = 32)
         else if(opcode == 7'b0010011) begin
             case(Funct3)
                 ADD:  temp_RD <= Imm_reg + RS1; //Add SUB based on Funct7
-                SLL:  temp_RD <= Imm_reg << RS1;
-                SLT:  temp_RD[0] <= (Imm_reg < RS1);
-                SLTU: temp_RD[0] <= (Imm_reg < RS1);
+                SLL:  temp_RD <= RS1 << Shamt;
+                SLT:  temp_RD <= (Imm_reg < RS1) ? 1'b1:1'b0;
+                SLTU: temp_RD <= (Imm_reg < RS1) ? 1'b1:1'b0;
                 XOR:  temp_RD <= Imm_reg ^ RS1; 
-                SRL:  temp_RD <= Imm_reg >> RS1; // Add SRA Funct7
+                SRL:  temp_RD <= RS1 >> Shamt; // Add SRA Funct7
                 OR:   temp_RD <= Imm_reg | RS1;
                 AND:  temp_RD <= Imm_reg & RS1;
                 default: temp_RD <= temp_RD;
             endcase
         end
+        
+        else
+            temp_RD <= 0;
     end
 
     assign RD = temp_RD;
