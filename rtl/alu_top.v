@@ -15,7 +15,7 @@ module alu_top#(parameter WIDTH = 32)
 
 );
 
-    parameter ADD = 0, SLL = 1, SLT = 2, SLTU = 3, XOR = 4, SRL = 5, OR = 6, AND = 7, NOP = 8; 
+    localparam ADD = 0, SLL = 1, SLT = 2, SLTU = 3, XOR = 4, SRL = 5, OR = 6, AND = 7, NOP = 8; 
 
     reg[WIDTH-1:0] temp_RD;
     
