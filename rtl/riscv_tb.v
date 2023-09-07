@@ -41,15 +41,23 @@ module riscv_tb();
         rst = 1;
         #20;
         rst = 0;
-        addr = 32'h00A08093;
+        addr = 32'h00A08093; //ADDI
         #20;
-        addr = 32'h00A10113;
+        addr = 32'h00A10113; //ADDI
         #20
-        addr = 32'h001101B3;
+        addr = 32'h001101B3; //ADD
         #20
-        addr = 32'h0030A233;
+        addr = 32'h0030A233; //SLT
         #20
-        addr = 32'h00115293;
+        addr = 32'h00115293; //SRLI
+        #20
+        addr = 32'h00211313; //SLL
+        #20
+        addr = 32'h0032F3B3; //AND
+        #20
+        addr = 32'h0032E433; //OR
+        #20
+        addr = 32'h0032C4B3; //XOR
         #20
         addr = 32'h0;
         
