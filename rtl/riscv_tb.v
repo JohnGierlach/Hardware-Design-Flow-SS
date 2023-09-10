@@ -59,6 +59,8 @@ module riscv_tb();
         #20
         addr = 32'h0032C4B3; //XOR
         #20
+        addr = 32'h40610533; //SUB
+        #20
         addr = 32'h0;
         
     end
