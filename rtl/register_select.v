@@ -5,21 +5,17 @@ module register_select #(parameter WIDTH = 32)(
 );
     reg[WIDTH-1:0] Reg_list [0:WIDTH-1];
     
-    initial
-    begin
-        Reg_list[0] = 32'b0;
-    end
     
-    reg[4:0] RD, RS2, RS1;
     wire[WIDTH-1:0] RS2_data, RS1_data;
     wire[WIDTH-1:0] RD_data;
+    
+    // Goes to RISC-V Top
+    reg[4:0] RD, RS2, RS1;
     reg[6:0] Funct7;
     reg[2:0] Funct3;
     reg[6:0] opcode;
     
-    wire[WIDTH-1:0] prev_addr;
-    reg RdEn;
-    reg[WIDTH-1:0] RdPntr;
+    // Goes to RISC-V Top
     alu_top ALU_ENGINE(.clk(clk), 
                        .rst(rst), 
                        .RS1(RS1_data), 
@@ -31,6 +27,7 @@ module register_select #(parameter WIDTH = 32)(
                        .Shamt(RS2),
                        .opcode(opcode));
     
+    // Goes to RISC-V Top
     always@(posedge clk)begin 
         if(rst) begin
             RD <= 5'b0;
@@ -39,8 +36,6 @@ module register_select #(parameter WIDTH = 32)(
             Funct7 <= 7'b0;
             Funct3 <= 3'b0;
             opcode <= 7'b0;
-            RdEn <= 1'b0;
-            RdPntr <= {WIDTH, 1'b0};
         end
             
         else begin
@@ -63,9 +58,8 @@ module register_select #(parameter WIDTH = 32)(
         Reg_list[RD] = RD_data;
    end
    
-   assign prev_addr = addr;
    assign RS1_data = Reg_list[RS1];
-   assign RS2_data = Reg_list[RS2];
+   assign RS2_data = Reg_list[RS2]; 
    assign RD_out = RD_data;
    
 endmodule
