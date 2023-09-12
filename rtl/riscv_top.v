@@ -24,9 +24,12 @@ module riscv_top #(parameter WIDTH = 32)
     (
     input clk,
     input rst,
-    input[31:0] addr,
     output[WIDTH-1:0] rd
     );
+
+    wire[31:0] addr;
+        
+    instruction_mem INSTRUCTION_MEMORY(.clk(clk), .rst(rst), .addr(addr));
 
     register_select REG_FILE_SELECT(.clk(clk), .rst(rst), .addr(addr), .RD_out(rd));
 
