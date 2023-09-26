@@ -4,8 +4,8 @@ module alu_top#(parameter WIDTH = 32)
 (
     input clk,
     input rst,
-    input[WIDTH-1:0] RS1,
-    input[WIDTH-1:0] RS2,
+    input signed[WIDTH-1:0] RS1,
+    input signed[WIDTH-1:0] RS2,
     input[2:0] Funct3,
     input[6:0] Funct7,
     input[6:0] opcode,
@@ -31,7 +31,7 @@ module alu_top#(parameter WIDTH = 32)
                 SLT:  temp_RD <= (RS1 < RS2) ? 1'b1:1'b0;
                 SLTU: temp_RD <= (RS1 < RS2) ? 1'b1:1'b0;
                 XOR:  temp_RD <= RS1 ^ RS2; 
-                SRL:  temp_RD <= RS1 >> RS2; // Add SRA Funct7
+                SRL:  temp_RD <= (Funct7 == 7'h20) ? RS1 >>> RS2 : RS1 >> RS2;
                 OR:   temp_RD <= RS1 | RS2;
                 AND:  temp_RD <= RS1 & RS2;
                 default: temp_RD <= temp_RD;
@@ -41,12 +41,12 @@ module alu_top#(parameter WIDTH = 32)
         // Immediate Operations
         else if(opcode == 7'b0010011) begin
             case(Funct3)
-                ADD:  temp_RD <= RS1 + Imm_reg; //Add SUB based on Funct7
+                ADD:  temp_RD <= (Funct7 == 7'h20) ? RS1 - Imm_reg : RS1 + Imm_reg; //Add SUB based on Funct7
                 SLL:  temp_RD <= RS1 << Shamt;
                 SLT:  temp_RD <= (Imm_reg < RS1) ? 1'b1:1'b0;
                 SLTU: temp_RD <= (Imm_reg < RS1) ? 1'b1:1'b0;
                 XOR:  temp_RD <= Imm_reg ^ RS1; 
-                SRL:  temp_RD <= RS1 >> Shamt; // Add SRA Funct7
+                SRL:  temp_RD <= (Funct7 == 7'h20) ? RS1 >>> Shamt : RS1 >> Shamt;
                 OR:   temp_RD <= Imm_reg | RS1;
                 AND:  temp_RD <= Imm_reg & RS1;
                 default: temp_RD <= temp_RD;

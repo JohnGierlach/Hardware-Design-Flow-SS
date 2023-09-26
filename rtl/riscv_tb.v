@@ -43,7 +43,8 @@ module riscv_tb();
     SUB x10, x2, x6
     SRL x11, x2, x4
     SLL x12, x2, x4
-    
+    SRAI x13, x10, 5
+    SRA x14, x10, x5
     */
     
     initial
