@@ -2,10 +2,20 @@ module instruction_mem #(parameter WIDTH = 32)
     (
     input clk,
     input rst,
-    output reg [WIDTH-1:0] addr
+    output [4:0] RD, RS2, RS1,
+    output [6:0] Funct7,
+    output [2:0] Funct3,
+    output [6:0] opcode
     );
 
-    reg[31:0] pc;
+    reg[WIDTH-1:0] pc;
+    reg[WIDTH-1:0] addr;
+    
+    // FW registers
+    reg[4:0] rd, rs2, rs1;
+    reg[6:0] funct7;
+    reg[2:0] funct3;
+    reg[6:0] Opcode;
     
     localparam NUM_INST = 15;
     
@@ -42,5 +52,33 @@ module instruction_mem #(parameter WIDTH = 32)
             end
         end
     end
+
+    // Extract machine code to run proper FW assembly
+    always@(posedge clk)begin 
+        if(rst) begin
+            rd <= 5'b0;
+            rs2 <= 5'b0;
+            rs1 <= 5'b0;
+            funct7 <= 7'b0;
+            funct3 <= 3'b0;
+            Opcode <= 7'b0;
+        end
+            
+        else begin
+                Opcode <= {addr[6:0]};
+                rd     <= {addr[11:7]};
+                funct3 <= {addr[14:12]};
+                rs1    <= {addr[19:15]};
+                rs2    <= {addr[24:20]};
+                funct7 <= {addr[31:25]};
+        end
+    end
+    
+    assign RD = rd;
+    assign RS1 = rs1;
+    assign RS2 = rs2;
+    assign Funct3 = funct3;
+    assign Funct7 = funct7;
+    assign opcode = Opcode;
     
 endmodule

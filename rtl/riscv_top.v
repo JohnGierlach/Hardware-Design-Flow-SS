@@ -27,41 +27,26 @@ module riscv_top #(parameter WIDTH = 32)
     output[WIDTH-1:0] rd
     );
     
-    // Wire to get address from instruction memory 
-    wire[31:0] addr;
     
     // Wires for passing along data processed from engines
     wire[WIDTH-1:0] RS1_data, RS2_data, RD_data;
     
-    // FW registers
-    reg[4:0] RD, RS2, RS1;
-    reg[6:0] Funct7;
-    reg[2:0] Funct3;
-    reg[6:0] opcode;
+    // FW wires
+    wire[4:0] RD, RS2, RS1;
+    wire[6:0] Funct7;
+    wire[2:0] Funct3;
+    wire[6:0] opcode;
     
-    // Extract machine code to run proper FW assembly
-    always@(posedge clk)begin 
-        if(rst) begin
-            RD <= 5'b0;
-            RS2 <= 5'b0;
-            RS1 <= 5'b0;
-            Funct7 <= 7'b0;
-            Funct3 <= 3'b0;
-            opcode <= 7'b0;
-        end
-            
-        else begin
-                opcode <= {addr[6:0]};
-                RD     <= {addr[11:7]};
-                Funct3 <= {addr[14:12]};
-                RS1    <= {addr[19:15]};
-                RS2    <= {addr[24:20]};
-                Funct7 <= {addr[31:25]};
-        end
-    end
     
     // Stores instructions in memory & fetches them from processing
-    instruction_mem INSTRUCTION_MEMORY(.clk(clk), .rst(rst), .addr(addr));    
+    instruction_mem INSTRUCTION_MEMORY(.clk(clk), 
+                                       .rst(rst), 
+                                       .RD(RD),
+                                       .RS1(RS1),
+                                       .RS2(RS2),
+                                       .Funct3(Funct3),
+                                       .Funct7(Funct7),
+                                       .opcode(opcode));    
     
     // Register select module 
     register_select REG_FILE_SELECT(.clk(clk), 
