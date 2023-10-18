@@ -14,8 +14,9 @@ module instruction_mem #(parameter WIDTH = 32)
     
     // Declare a localparam named NUM_INST with the value of 15
     
-    // Declare a vector reg (similar to array) with NUM_INST regs inst_rom with size of 32-bits 
-    // Last instruction must be a NO-OP 
+    // Declare a vector reg (similar to array) with NUM_INST regs named inst_rom with size of 32-bits
+    // Insert converted RISC-V assembly code into inst_rom  
+    // Last instruction must be a NO-OP (NO-OP = 32'b0)
 
 
     always@(posedge clk)begin
@@ -29,7 +30,7 @@ module instruction_mem #(parameter WIDTH = 32)
     // Extract machine code to run proper FW assembly
     always@(posedge clk)begin 
         
-        //Tnitialize RISC-V bit field regs with rst signal
+        //Initialize RISC-V bit field regs with rst signal
 
         // Using the addr reg, set the RISC-V bit fields 
 
